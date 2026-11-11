@@ -1,6 +1,6 @@
 [package]
 name = "namemcsniper"
-version = "4.0.0-rc.1"
+version = "1.0.0-rc.1"
 edition = "2024"
 description = "Schedule Minecraft Java username changes with an offline preview"
 license = "MIT"

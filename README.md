@@ -120,4 +120,4 @@ cargo test --locked --all-targets
 
 GitHub Actions runs these checks on Linux, Windows, and macOS. [MIT license](LICENSE)
 
-To publish a Rust release, push a new tag matching the version in `Cargo.toml`, such as `v4.0.0-rc.1`. The release workflow builds all three ZIPs, extracts each one, and runs `simulate` from the extracted binary before publishing the packages and `SHA256SUMS`. It marks release candidate tags as prereleases. [Release workflow](.github/workflows/release.yml)
+To publish a Rust release, push a new tag matching the version in `Cargo.toml`, such as `v1.0.0-rc.1`. The release workflow builds all three ZIPs, extracts each one, and runs `simulate` from the extracted binary before publishing the packages and `SHA256SUMS`. It marks release candidate tags as prereleases. [Release workflow](.github/workflows/release.yml)
