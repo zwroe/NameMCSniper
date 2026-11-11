@@ -1,5 +1,6 @@
-# Copy this file to tokens.txt and put one Minecraft bearer token per line.
-# Blank lines and lines beginning with # are ignored.
-
-first-account-token
-second-account-token
+# Copy this file to tokens.txt beside the NameMCSniper executable.
+# Add one Minecraft Services bearer token per line. The Bearer prefix is optional.
+# Keep tokens.txt private.
+#
+# Example entry
+# Bearer replace-with-your-minecraft-services-token

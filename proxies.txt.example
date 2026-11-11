@@ -1,5 +1,9 @@
-# Copy this file to proxies.txt and put one HTTP(S) proxy per line.
-# Blank lines and lines beginning with # are ignored.
-
-http://host:port
-http://username:password@host:port
+# Copy this file to proxies.txt beside the NameMCSniper executable.
+# Add one HTTP or HTTPS proxy per line. Percent-encode reserved characters in credentials.
+# Keep proxies.txt private if it contains credentials.
+#
+# Example entries
+# proxy.example:8080
+# http://example-user:example-password@proxy.example:8080
+# proxy.example:8080@example-user:example-password
+# https://proxy.example:8443

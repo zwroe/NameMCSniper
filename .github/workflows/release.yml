@@ -1,0 +1,63 @@
+name: release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  package:
+    if: github.event.created && !github.event.deleted
+    uses: ./.github/workflows/tests.yml
+
+  publish:
+    needs: package
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          pattern: namemcsniper-*
+          merge-multiple: true
+          path: dist
+      - name: Verify the tag and publish packages
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          tag="$GITHUB_REF_NAME"
+          ref="refs/tags/$tag"
+          refs=$(git ls-remote origin "$ref" "$ref^{}")
+          tagged_commit=$(awk -v peeled="$ref^{}" '$2 == peeled { print $1 }' <<< "$refs")
+          if [[ -z "$tagged_commit" ]]; then
+            tagged_commit=$(awk -v ref="$ref" '$2 == ref { print $1 }' <<< "$refs")
+          fi
+          if [[ "$tagged_commit" != "$(git rev-parse HEAD)" ]]; then
+            echo "The release tag no longer points to the packaged commit." >&2
+            exit 1
+          fi
+
+          cd dist
+          archives=(
+            "namemcsniper-$tag-windows-x64.zip"
+            "namemcsniper-$tag-linux-x64.zip"
+            "namemcsniper-$tag-macos-arm64.zip"
+          )
+          sha256sum -- "${archives[@]}" > SHA256SUMS
+          flags=(--repo "$GITHUB_REPOSITORY" --verify-tag --generate-notes)
+          if [[ "${tag%%+*}" == *-* ]]; then
+            flags+=(--prerelease --latest=false)
+          fi
+          gh release create "$tag" "${archives[@]}" SHA256SUMS "${flags[@]}"
